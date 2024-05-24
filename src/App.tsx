@@ -8,10 +8,14 @@ const client = generateClient<Schema>();
 
 function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+  const [characterStats, setcharacterStats] = useState<Array<Schema["Character"]["type"]>>([]);
 
   useEffect(() => {
     client.models.Todo.observeQuery().subscribe({
       next: (data) => setTodos([...data.items]),
+    });
+    client.models.Character.observeQuery().subscribe({
+      next: (data) => setcharacterStats([...data.items]),
     });
   }, []);
 
@@ -23,6 +27,9 @@ function App() {
   function createTodo() {
     client.models.Todo.create({ content: window.prompt("Todo content") });
   }
+  function createCharacter() {
+    client.models.Character.create({ content: window.prompt("Character Name") });
+  }
 
   return (
         
@@ -32,9 +39,13 @@ function App() {
           <h1>{user?.signInDetails?.loginId}'s todos</h1>
           <button onClick={signOut}>Sign out</button>
           <button onClick={createTodo}>+ new</button>
+          <button onClick={createCharacter}>+ Character</button>
           <ul>
             {todos.map((todo) => (
-              <li key={todo.id} onClick={() => deleteTodo(todo.id)}>{todo.content}</li>
+              <li key={todo.id} onClick={() => deleteTodo(todo.id)}>Todo {todo.content}</li>
+            ))}
+            {characterStats.map((character) => (
+              <li key={character.id}>Character {character.content}</li>
             ))}
           </ul>
           <div>
