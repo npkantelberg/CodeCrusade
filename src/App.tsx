@@ -45,7 +45,10 @@ function App() {
               <li key={todo.id} onClick={() => deleteTodo(todo.id)}>Todo {todo.content}</li>
             ))}
             {characterStats.map((character) => (
-              <li key={character.id}>Character {character.content}</li>
+              <ul>
+                <li key={character.id}>Character {character.name}</li>
+                <li key={character.id}>Character {character.content}</li>
+              </ul>
             ))}
           </ul>
           <div>
