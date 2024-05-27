@@ -7,7 +7,6 @@ import '@aws-amplify/ui-react/styles.css'
 const client = generateClient<Schema>();
 
 function App() {
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
   const [characterStats, setcharacterStats] = useState<Array<Schema["Character"]["type"]>>([]);
   const [character, setCharacter] = useState(
     {
@@ -41,15 +40,6 @@ function App() {
       next: (data) => setcharacterStats([...data.items]),
     });
   }, []);
-
-    
-  function deleteTodo(id: string) {
-    client.models.Todo.delete({ id })
-  }
-
-  function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
-  }
   function createCharacter() {
     // client.models.Character.create({ content: window.prompt("Character Name") });
     client.models.Character.create(character);
@@ -74,7 +64,6 @@ function App() {
         <main>
           <h1>{user?.signInDetails?.loginId}'s todos</h1>
           <button onClick={signOut}>Sign out</button>
-          <button onClick={createTodo}>+ new</button>
           <button onClick={createCharacter}>+ Character</button>
           <div>
             <label htmlFor="name">Name</label>

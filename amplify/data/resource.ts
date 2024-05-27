@@ -30,10 +30,10 @@ const schema = a.schema({
       gitAuth: a.string(),
     }).authorization(allow => [allow.owner()]),
     // }).authorization((allow) => [allow.publicApiKey()]),
-  Todo: a
-    .model({
-      content: a.string(),
-    }).authorization(allow => [allow.owner()]),
+  // Todo: a
+  //   .model({
+  //     content: a.string(),
+  //   }).authorization(allow => [allow.owner()]),
     // }).authorization((allow) => [allow.publicApiKey()]),
 });
 
