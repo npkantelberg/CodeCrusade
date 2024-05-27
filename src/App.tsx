@@ -33,9 +33,6 @@ function App() {
   );
 
   useEffect(() => {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-    });
     client.models.Character.observeQuery().subscribe({
       next: (data) => setcharacterStats([...data.items]),
     });
