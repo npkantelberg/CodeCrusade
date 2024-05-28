@@ -3,6 +3,8 @@ import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import { Authenticator } from '@aws-amplify/ui-react'
 import '@aws-amplify/ui-react/styles.css'
+import { Octokit } from "@octokit/core";
+import { createTokenAuth } from "@octokit/auth-token";
 
 const client = generateClient<Schema>();
 
@@ -29,14 +31,84 @@ function App() {
       gitUser: "",
       gitRepo: "",
       gitAuth: "",
+      id: "",
     },
   );
+  const [commits, setCommits] = useState(0);
 
   useEffect(() => {
+    
     client.models.Character.observeQuery().subscribe({
       next: (data) => setcharacterStats([...data.items]),
     });
-  }, []);
+    // if (characterStats[0].id === ""){
+    //   console.log("No Auth");
+    // } else {
+    //   if (characterStats.length > 0){
+    //     console.log(characterStats);
+    //     // setCharacter((character) => ({
+    //     //   name: characterStats[0].name || "",
+    //     // }));
+    //   }
+    console.log(characterStats.length);
+    if (characterStats.length > 0){
+      getData(characterStats[0].gitUser, characterStats[0].gitRepo, characterStats[0].gitAuth);
+    }
+    // }
+    shouldLevelUp();
+    // Pretty sure this is looping WAAAYYYY to many times do to characterStats updating itself
+  }, [characterStats]);
+
+  function getData(user: string, repo: string, auth: string) {
+
+    const octokit = new Octokit({
+      auth: auth
+    })
+    if (characterStats.length === 0){
+      console.log('return');
+      return;
+    }
+    octokit.request('GET /repos/{owner}/{repo}/commits', {
+      owner: user,
+      repo: repo,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    })
+    .then(response => {
+      setCommits(response.data.length);
+    })
+  }
+  
+  function calculateStats() {
+    setCharacter((character) => ({
+      ...character,
+      level: character.level + 1,
+      exp: 0,
+    }));
+  }
+
+  function shouldLevelUp() {
+    if (characterStats.length === 0){
+      return;
+    }
+    let expRequired = 2 * character.level;
+    if (character.exp >= expRequired) {
+      setCharacter((character) => ({
+        ...character,
+        level: character.level + 1,
+        id: characterStats[0].id,
+      }));
+      client.models.Character.update(character);
+    } else {
+      setCharacter((character) => ({
+        ...character,
+        exp: character.exp = commits,
+      }));
+    }
+
+  }
+
   function createCharacter() {
     // client.models.Character.create({ content: window.prompt("Character Name") });
     client.models.Character.create(character);
@@ -59,7 +131,8 @@ function App() {
     <Authenticator>            
       {({ signOut, user }) => (
         <main>
-          <h1>{user?.signInDetails?.loginId}'s todos</h1>
+          <h1>{user?.signInDetails?.loginId}'s Character</h1>
+          {commits}
           <button onClick={signOut}>Sign out</button>
           <button onClick={createCharacter}>+ Character</button>
           <div>
