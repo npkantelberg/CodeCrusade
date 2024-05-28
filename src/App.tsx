@@ -41,15 +41,7 @@ function App() {
     client.models.Character.observeQuery().subscribe({
       next: (data) => setcharacterStats([...data.items]),
     });
-    // if (characterStats[0].id === ""){
-    //   console.log("No Auth");
-    // } else {
-    //   if (characterStats.length > 0){
-    //     console.log(characterStats);
-    //     // setCharacter((character) => ({
-    //     //   name: characterStats[0].name || "",
-    //     // }));
-    //   }
+
     console.log(characterStats.length);
     if (characterStats.length > 0){
       getData(characterStats[0].gitUser, characterStats[0].gitRepo, characterStats[0].gitAuth);
@@ -79,14 +71,6 @@ function App() {
       setCommits(response.data.length);
     })
   }
-  
-  function calculateStats() {
-    setCharacter((character) => ({
-      ...character,
-      level: character.level + 1,
-      exp: 0,
-    }));
-  }
 
   function shouldLevelUp() {
     if (characterStats.length === 0){
@@ -110,7 +94,6 @@ function App() {
   }
 
   function createCharacter() {
-    // client.models.Character.create({ content: window.prompt("Character Name") });
     client.models.Character.create(character);
   }
 
@@ -156,9 +139,6 @@ function App() {
             <input name="gitAuth" value={character.gitAuth} onChange={handleChange}></input>
           </div>
           <div>
-            {/* {todos.map((todo) => (
-              <li key={todo.id} onClick={() => deleteTodo(todo.id)}>Todo {todo.content}</li>
-            ))} */}
             {characterStats.map((character) => (
               <ul>
                 <button onClick={() => deleteCharacter(character.id)}>Delete Character</button>
