@@ -42,9 +42,13 @@ function App() {
       next: (data) => setcharacterStats([...data.items]),
     });
 
-    console.log(characterStats.length);
     if (characterStats.length > 0){
-      getData(characterStats[0].gitUser, characterStats[0].gitRepo, characterStats[0].gitAuth);
+      const gitUser = characterStats[0]?.gitUser;
+      const gitRepo = characterStats[0]?.gitRepo;
+      const gitAuth = characterStats[0]?.gitAuth;
+      if (gitUser && gitRepo && gitAuth) {
+        getData(gitUser, gitRepo, gitAuth);
+      }
     }
     // }
     shouldLevelUp();
